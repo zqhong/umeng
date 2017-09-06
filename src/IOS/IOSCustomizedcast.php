@@ -1,50 +1,55 @@
 <?php
+
 namespace UmengPusher\Umeng\IOS;
 
-use UmengPusher\Umeng\IOSNotification;
 use UmengPusher\Umeng\Exception\UmengException;
+use UmengPusher\Umeng\IOSNotification;
 
 
-class IOSCustomizedcast extends IOSNotification {
+class IOSCustomizedcast extends IOSNotification
+{
 
-	function  __construct() {
-		parent::__construct();
-		$this->data["type"] = "customizedcast";
-		$this->data["alias_type"] = NULL;
-	}
+    function __construct()
+    {
+        parent::__construct();
+        $this->data["type"] = "customizedcast";
+        $this->data["alias_type"] = NULL;
+    }
 
-	function isComplete() {
-		parent::isComplete();
-		if (!array_key_exists("alias", $this->data) && !array_key_exists("file_id", $this->data)){
+    function isComplete()
+    {
+        parent::isComplete();
+        if (!array_key_exists("alias", $this->data) && !array_key_exists("file_id", $this->data)) {
 
-			throw new UmengException("You need to set alias or upload file for customizedcast!");
-		}
-	}
+            throw new UmengException("You need to set alias or upload file for customizedcast!");
+        }
+    }
 
-	// Upload file with device_tokens or alias to Umeng
-	function uploadContents($content) {
-		if ($this->data["appkey"] == NULL){
+    // Upload file with device_tokens or alias to Umeng
+    function uploadContents($content)
+    {
+        if ($this->data["appkey"] == NULL) {
 
-			throw new UmengException("appkey should not be NULL!");
-		}
-		if ($this->data["timestamp"] == NULL){
+            throw new UmengException("appkey should not be NULL!");
+        }
+        if ($this->data["timestamp"] == NULL) {
 
-			throw new UmengException("timestamp should not be NULL!");
-		}
-		if (!is_string($content)){
+            throw new UmengException("timestamp should not be NULL!");
+        }
+        if (!is_string($content)) {
 
-			throw new UmengException("content should be a string!");
-		}
+            throw new UmengException("content should be a string!");
+        }
 
-		$post = array("appkey"           => $this->data["appkey"],
-					  "timestamp"        => $this->data["timestamp"],
-					  "content"          => $content
-					  );
-		$url = $this->host . $this->uploadPath;
-		$postBody = json_encode($post);
-		$sign = md5("POST" . $url . $postBody . $this->appMasterSecret);
-		$url = $url . "?sign=" . $sign;
-		$ch = curl_init($url);
+        $post = array("appkey" => $this->data["appkey"],
+            "timestamp" => $this->data["timestamp"],
+            "content" => $content
+        );
+        $url = $this->host . $this->uploadPath;
+        $postBody = json_encode($post);
+        $sign = md5("POST" . $url . $postBody . $this->appMasterSecret);
+        $url = $url . "?sign=" . $sign;
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -56,31 +61,30 @@ class IOSCustomizedcast extends IOSNotification {
         $curlErrNo = curl_errno($ch);
         $curlErr = curl_error($ch);
         curl_close($ch);
-		$returnData = json_decode($result, TRUE);
+        $returnData = json_decode($result, TRUE);
         if ($httpCode == "0") {
-			$errMsg = "Curl error number:" . $curlErrNo . " , Curl error details:" . $curlErr . "\r\n";
+            $errMsg = "Curl error number:" . $curlErrNo . " , Curl error details:" . $curlErr . "\r\n";
 
-			throw new UmengException($errMsg, 0);
-		}
-        else if ($httpCode != "200") {
-			$errMsg = "http code:" . $httpCode . " details:" . $result . "\r\n";
+            throw new UmengException($errMsg, 0);
+        } else if ($httpCode != "200") {
+            $errMsg = "http code:" . $httpCode . " details:" . $result . "\r\n";
 
-			throw new UmengException($errMsg, $httpCode, $returnData['data']['error_code']);
-		}
+            throw new UmengException($errMsg, $httpCode, $returnData['data']['error_code']);
+        }
 
-        if ($returnData["ret"] == "FAIL"){
-			$errMsg = "Failed to upload file, details:" . $result . "\r\n";
+        if ($returnData["ret"] == "FAIL") {
+            $errMsg = "Failed to upload file, details:" . $result . "\r\n";
 
-			throw new UmengException($errMsg, $httpCode, $returnData['data']['error_code']);
-		}
-        else
-        	$this->data["file_id"] = $returnData["data"]["file_id"];
-	}
+            throw new UmengException($errMsg, $httpCode, $returnData['data']['error_code']);
+        } else
+            $this->data["file_id"] = $returnData["data"]["file_id"];
+    }
 
 
-	function getFileId() {
-		if (array_key_exists("file_id", $this->data))
-			return $this->data["file_id"];
-		return NULL;
-	}
+    function getFileId()
+    {
+        if (array_key_exists("file_id", $this->data))
+            return $this->data["file_id"];
+        return NULL;
+    }
 }

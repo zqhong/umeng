@@ -12,7 +12,8 @@ class Pusher
     protected $production_mode = false;
 
 
-    public function __construct($appKey, $masterSecret){
+    public function __construct($appKey, $masterSecret)
+    {
         $this->appKey = $appKey;
         $this->appMasterSecret = $masterSecret;
         $this->timestamp = strval(time());

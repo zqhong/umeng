@@ -16,11 +16,13 @@ class UmengException extends Exception
         $this->errCode = $errCode;
     }
 
-    public function getHttpCode(){
+    public function getHttpCode()
+    {
         return $this->httpCode;
     }
 
-    public function getErrCode(){
+    public function getErrCode()
+    {
         return $this->errCode;
     }
 }
