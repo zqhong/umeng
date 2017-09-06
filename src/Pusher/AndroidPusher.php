@@ -10,7 +10,7 @@ use UmengPusher\Umeng\Android\AndroidFilecast;
 use UmengPusher\Umeng\Android\AndroidGroupcast;
 use UmengPusher\Umeng\Android\AndroidListcast;
 use UmengPusher\Umeng\Android\AndroidUnicast;
-use Log;
+
 
 class AndroidPusher extends Pusher
 {
