@@ -22,9 +22,10 @@ class UmengPusher
         $iosAppMasterSecret = Arr::get($config, 'umeng.ios_app_master_secret');
         $androidAppKey = Arr::get($config, 'umeng.android_app_key');
         $androidAppMasterSecret = Arr::get($config, 'umeng.android_app_master_secret');
+        $productionMode = Arr::get($config, 'umeng.production_mode');
 
-        $this->android = new AndroidPusher($androidAppKey, $androidAppMasterSecret);
-        $this->ios = new IOSPusher($iosAppKey, $iosAppMasterSecret);
+        $this->android = new AndroidPusher($androidAppKey, $androidAppMasterSecret, $productionMode);
+        $this->ios = new IOSPusher($iosAppKey, $iosAppMasterSecret, $productionMode);
     }
 
     public function android()
