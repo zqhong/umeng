@@ -28,9 +28,14 @@ class UmengServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
         $this->app->singleton('umeng',function($app){
-            return new UmengPusher();
+            return new UmengPusher([
+                env('umeng.ios_app_key'),
+                env('umeng.ios_app_master_secret'),
+                env('umeng.android_app_key'),
+                env('umeng.android_app_master_secret'),
+                env('umeng.production_mode'),
+            ]);
         });
     }
 
